@@ -1,0 +1,42 @@
+0.Create a sample dataset in a MongoDB collection that contains the following documents:
+=>
+db.day3.insertMany([{
+   _id: 1,
+   name: "John",
+   age: 25,
+   address: "123 Main St"
+},
+{
+   _id: 2,
+   name: "Jane",
+   age: 35,
+   address: "456 Main St"
+},
+{
+   _id: 3,
+   name: "Bob",
+   age: 45,
+   address: "789 Main St"
+},
+{
+   _id: 4,
+   name: "Alice",
+   age: 55,
+   address: "246 Main St"
+}])
+
+
+
+
+1.Create a separate collection that contains information about the zip codes for each address. The structure of the documents in this collection should be as follows:-
+=> db.day3.aggregate([{$lookup:{from:"customers",localField:"name",foreignField:"name",as:"location"}},{$set:{zipcode:{$arrayElemAt:["$location.address.zip",0]}}},{$project:{address:1,zipcode:1}},{$out:"day31"}])
+
+
+
+2.Create a third collection that contains information about the city and state for each zip code. The structure of the documents in this collection should be as follows:
+=>
+db.day3.aggregate([{$lookup:{from:"customers",localField:"name",foreignField:"name",as:"location"}},{$set:{zipcode:{$arrayElemAt:["$location.address.zip",0]},city:{$arrayElemAt:["$location.address.city",0]},state:{$arrayElemAt:["$location.address.state",0]}}},{$project:{zipcode:1,city:1,state:1}},{$out:"day32"}])
+
+3.Create a fourth collection that contains information about the country for each state. The structure of the documents in this collection should be as follows:
+=>
+db.day3.aggregate([{$lookup:{from:"customers",localField:"name",foreignField:"name",as:"location"}},{$set:{state:{$arrayElemAt:["$location.address.state",0]},country:{$arrayElemAt:["$location.address.country",0]}}},{$project:{state:1,country:1}},{$out:"day33"}])
